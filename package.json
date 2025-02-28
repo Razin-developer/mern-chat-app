@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./backend/dist/index.js",
     "dev": "npx tsx ./backend/src/index.ts",
-    "build": "npm install && tsc && npm install --prefix ./frontend && npm run build --prefix ./frontend",
+    "build": "npm install && npm install --prefix ./frontend",
     "test": "tsc && npm run build --prefix ./frontend"
   },
   "keywords": [],
