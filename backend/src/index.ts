@@ -20,6 +20,7 @@ import path from 'path';
 
 // Connecting to the database
 const mongoUri = process.env.MONGODB_URI;
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 const htmlPath = path.join(__dirname, '../../../frontend/dist/index.html');
 console.log(htmlPath);
 
