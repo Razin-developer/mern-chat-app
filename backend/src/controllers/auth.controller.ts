@@ -251,7 +251,7 @@ export async function handleUpdate(req: Request, res: Response): Promise<void> {
       .findByIdAndUpdate({
         _id: userId
       }, { 
-        profileImage: `/images/user/${profileImage}` 
+        profileImage: `/images/users/${profileImage}` 
       }, { new: true });
 
     const token = setJwt(String(newUser?._id));

@@ -20,9 +20,12 @@ import path from 'path';
 
 // Connecting to the database
 const mongoUri = process.env.MONGODB_URI;
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
-const htmlPath = path.join(__dirname, '../../frontend/dist/index.html');
+const __dirname = path.resolve()
+const htmlPath = path.join(__dirname, '/frontend/dist/index.html');
+const staticPath = path.join(__dirname, '/frontend/dist');
 console.log(htmlPath);
+console.log(__dirname);
+console.log(staticPath);
 
 if (!mongoUri) {
     throw new Error('MongoURI is missing');
@@ -52,10 +55,15 @@ app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api/messages', messageRoutes); 
 
-app.get('*', (req, res) => {
-  app.use(express.static(path.join(__dirname, '../../frontend/dist')));
-  res.sendFile(htmlPath);
-});
+
+
+console.log(process.env.NODE_ENV);
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(staticPath)))
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(htmlPath));
+  });
+}
 
 export default app
 

@@ -25,7 +25,7 @@ const ProfilePage = () => {
           <div className="flex flex-col items-center gap-4">
             <div className="relative">
               <img
-                src={selectedImg || authUser.profileImage || "/avatar.png"}
+                src={selectedImg || authUser.profileImage || "/default/default.png"}
                 alt="Profile"
                 className="size-32 rounded-full object-cover border-4 "
               />

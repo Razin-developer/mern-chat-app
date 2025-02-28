@@ -5,7 +5,7 @@ const userSchema = new Schema({
   email: { type: String, require: true, unique: true },
   password: { type: String, require: true },
   role: { type: String, require: true },
-  profileImage: { type: String, default: "/images/default.png" }
+  profileImage: { type: String, default: "/default/default.png" }
 }, { timestamps: true })
 
 const User = model('User', userSchema);

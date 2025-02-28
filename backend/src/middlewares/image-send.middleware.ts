@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // ✅ Ensure correct absolute path
-const uploadDirectory = path.resolve(__dirname, '../../../frontend/public/images/messages');
+const uploadDirectory = path.resolve(__dirname, '../../../frontend/dist/images/messages');
 console.log("✅ Upload directory:", uploadDirectory);
 
 // Multer Storage Configuration
