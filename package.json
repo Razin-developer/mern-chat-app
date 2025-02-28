@@ -1,0 +1,44 @@
+{
+  "name": "social-media-platform",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./backend/dist/index.js",
+    "dev": "npx tsx ./backend/src/index.ts",
+    "build": "npm install && tsc && npm install --prefix ./frontend && npm run build --prefix ./frontend",
+    "test": "tsc && npm run build --prefix ./frontend"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "type": "module",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.10.0",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.10.0",
+    "passport": "^0.7.0",
+    "socket.io": "^4.8.1",
+    "typescript": "^5.7.3"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cookie-parser": "^1.4.8",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.8",
+    "@types/multer": "^1.4.12",
+    "@types/node": "^22.13.1",
+    "@types/nodemailer": "^6.4.17",
+    "@types/passport": "^1.0.17",
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2"
+  }
+}
