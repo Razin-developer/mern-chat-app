@@ -6,4 +6,8 @@ export default defineConfig({
   plugins: [
     react(),
   ],
+  server: {
+    strictPort: true, // Ensure Vite serves correct MIME types
+  },
+
 })
