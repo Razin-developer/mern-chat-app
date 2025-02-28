@@ -1,7 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.js"
-import "./App.css";
 
 import { BrowserRouter } from "react-router-dom";
 
