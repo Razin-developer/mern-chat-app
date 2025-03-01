@@ -7,7 +7,7 @@ import { getUser } from "../service/jwt.service.js";
 declare global {
 	namespace Express {
 		export interface Request {
-      user?: {
+      users?: {
 				_id: mongoose.Types.ObjectId;
 				name: string;
 				email: string;
@@ -42,7 +42,7 @@ const authorize = async (req: Request, res: Response, next: NextFunction): Promi
       return;
     }
 
-    req.user = {
+    req.users = {
       _id: user._id,
       name: user.name,
       email: user.email,

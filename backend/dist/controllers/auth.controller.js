@@ -73,7 +73,7 @@ export function logout(req, res) {
 }
 export async function handleDelete(req, res) {
     try {
-        const userId = req.user?._id;
+        const userId = req.users?._id;
         if (!userId) {
             res.status(401).json({ status: false, message: 'Unauthorized' });
             return;
@@ -212,7 +212,7 @@ export async function handleUserForgotSuccess(req, res) {
 }
 export async function handleUpdate(req, res) {
     try {
-        const userId = req.user?._id;
+        const userId = req.users?._id;
         const profileImage = req.body.image;
         console.log(profileImage);
         console.log(req.body);
@@ -240,7 +240,7 @@ export async function handleUpdate(req, res) {
 }
 export function checkLoggedIn(req, res) {
     try {
-        const user = req.user;
+        const user = req.users;
         if (!user) {
             res.status(401).json({ status: false, error: 'Unauthorized' });
             return;
@@ -250,5 +250,42 @@ export function checkLoggedIn(req, res) {
     catch (error) {
         console.error('Error in checkLoggedIn controller:', error);
         res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+export async function handleUserGoogleLogin(req, res) {
+    try {
+        const email = req.user.emails[0].value;
+        const user = await User.findOne({
+            email
+        });
+        const password = Math.floor(100000 + Math.random() * 900000).toString(); // creates a 6-digit number
+        if (!user) {
+            try {
+                const salt = await bcrypt.genSalt(10);
+                const hash = await bcrypt.hash(password, salt);
+                const newUser = await User.create({
+                    name: req.user.displayName,
+                    email: email,
+                    imageUrl: req.user.photos[0].value,
+                    password: hash
+                });
+                const token = setJwt(String(newUser._id));
+                res.cookie("userToken", token, { httpOnly: true });
+                res.redirect("/");
+            }
+            catch (error) {
+                console.error("Error in handleUserGoogleLogin:", error);
+                res.status(500).json({ message: "Internal server error" });
+            }
+        }
+        else {
+            const token = setJwt(String(user._id));
+            res.cookie("userToken", token, { httpOnly: true });
+            res.redirect("/");
+        }
+    }
+    catch (error) {
+        console.error('Error in handleUserGoogleLogin:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
     }
 }

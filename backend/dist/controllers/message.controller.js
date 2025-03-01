@@ -4,7 +4,7 @@ import { getReceiverSocketId, io } from '../socket/socket.js';
 import cloudinary from '../socket/cloudinary.js';
 export async function getUsers(req, res) {
     try {
-        const loggedInUserId = req.user?._id;
+        const loggedInUserId = req.users?._id;
         const filteredUsers = await User.find({ _id: { $ne: loggedInUserId } }).select("-password");
         res.status(200).json(filteredUsers);
     }
@@ -16,7 +16,7 @@ export async function getUsers(req, res) {
 export async function getMessages(req, res) {
     try {
         const { id: userToChatId } = req.params;
-        const myId = req.user?._id;
+        const myId = req.users?._id;
         const messages = await Message.find({
             $or: [
                 { senderId: myId, receiverId: userToChatId },
@@ -32,7 +32,7 @@ export async function getMessages(req, res) {
 }
 export async function sendMessages(req, res) {
     try {
-        const senderId = req.user?._id;
+        const senderId = req.users?._id;
         const { receiverId } = req.params;
         const { text, image } = req.body;
         let newMessage;

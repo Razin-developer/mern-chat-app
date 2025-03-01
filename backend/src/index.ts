@@ -5,6 +5,8 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
+import passport from 'passport';
+import session from 'express-session';
 
 // Importing routes
 import authRoutes from './routes/auth.routes.js';
@@ -50,6 +52,41 @@ app.use(cors({
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'your_secret_key', // Use a secure secret key
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false } // Set true if using HTTPS
+}));
+app.use(passport.initialize());
+
+
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+
+const clientID = process.env.GOOGLE_CLIENT_ID;
+const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+
+if (clientID !== undefined && clientSecret) {
+
+  passport.use(new GoogleStrategy({
+    clientID: clientID,
+    clientSecret: clientSecret,
+    callbackURL: '/api/auth/google/callback',
+    scope: ['email', 'profile'],
+  }, (accessToken: any, refreshToken: any, profile: any, done: any) => {
+    done(null, profile);
+  }));
+} else {
+  console.error('Google client ID or secret is missing');
+}
+
+passport.serializeUser((users: any, done: any) => {
+  done(null, users);
+});
+
+passport.deserializeUser((users: any, done: any) => {
+  done(null, users);
+});
 
 // App routes
 app.use('/api/auth', authRoutes);

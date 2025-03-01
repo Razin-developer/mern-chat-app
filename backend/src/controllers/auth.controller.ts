@@ -90,7 +90,7 @@ export function logout(req: Request, res: Response): void {
 
 export async function handleDelete(req: Request, res: Response): Promise<void> {
   try {
-    const userId = (req as any).user?._id;
+    const userId = (req as any).users?._id;
 
     if (!userId) {
       res.status(401).json({ status: false, message: 'Unauthorized' });
@@ -221,7 +221,7 @@ export async function handleUserForgotSuccess(req: Request, res: Response): Prom
       res.cookie("userToken", token, { httpOnly: true });
       res.status(200).json(user);
     } else {
-      res.status(400).json({message: "Cant find user email: " + email});
+      res.status(400).json({ message: "Cant find user email: " + email });
     }
   } catch (error) {
     console.log("Error in handleUserForgotSuccess:", error);
@@ -232,12 +232,12 @@ export async function handleUserForgotSuccess(req: Request, res: Response): Prom
 
 export async function handleUpdate(req: Request, res: Response): Promise<void> {
   try {
-    const userId = req.user?._id;
+    const userId = (req.users as any)?._id;
     const profileImage = req.body.image;
 
     console.log(profileImage);
     console.log(req.body);
-    
+
 
     if (!userId) {
       res.status(401).json({ status: false, error: 'Unauthorized' });
@@ -245,7 +245,7 @@ export async function handleUpdate(req: Request, res: Response): Promise<void> {
     }
 
     if (!profileImage) {
-      res.status(400).json({message: "Provide a image"})
+      res.status(400).json({ message: "Provide a image" })
       return;
     }
 
@@ -256,7 +256,7 @@ export async function handleUpdate(req: Request, res: Response): Promise<void> {
       { profileImage: uploadResponse.secure_url },
       { new: true }
     );
-    
+
 
     const token = setJwt(String(newUser?._id));
     res.cookie('userToken', token, { httpOnly: true });
@@ -271,7 +271,7 @@ export async function handleUpdate(req: Request, res: Response): Promise<void> {
 
 export function checkLoggedIn(req: Request, res: Response): void {
   try {
-    const user = req.user;
+    const user = req.users;
 
     if (!user) {
       res.status(401).json({ status: false, error: 'Unauthorized' });
@@ -282,5 +282,46 @@ export function checkLoggedIn(req: Request, res: Response): void {
   } catch (error: any) {
     console.error('Error in checkLoggedIn controller:', error);
     res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
+export async function handleUserGoogleLogin(req: Request, res: Response): Promise<void> {
+  try {
+
+
+    const email = (req.user as any).emails[0].value;
+    const user = await User.findOne({
+      email
+    });
+
+    const password = Math.floor(100000 + Math.random() * 900000).toString(); // creates a 6-digit number
+
+    if (!user) {
+      try {
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(password, salt);
+        const newUser = await User.create({
+          name: (req.user as any).displayName,
+          email: email,
+          imageUrl: (req.user as any).photos[0].value,
+          password: hash
+        });
+        const token = setJwt(String(newUser._id));
+        res.cookie("userToken", token, { httpOnly: true });
+        res.redirect("/");
+      } catch (error) {
+        console.error("Error in handleUserGoogleLogin:", error);
+        res.status(500).json({ message: "Internal server error" });
+      }
+    } else {
+      const token = setJwt(String(user._id));
+      res.cookie("userToken", token, { httpOnly: true });
+      res.redirect("/");
+    }
+  }
+  catch (error: any) {
+    console.error('Error in handleUserGoogleLogin:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+
   }
 }

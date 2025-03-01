@@ -17,7 +17,7 @@ const authorize = async (req, res, next) => {
             res.status(404).json({ status: false, error: "User not found" });
             return;
         }
-        req.user = {
+        req.users = {
             _id: user._id,
             name: user.name,
             email: user.email,
