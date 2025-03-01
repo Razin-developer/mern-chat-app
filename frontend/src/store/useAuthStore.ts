@@ -129,12 +129,7 @@ export const useAuthStore: any = create((set, get: any) => ({
   updateProfile: async (data: any) => {
     set({ isUpdatingProfile: true });
     try {
-      const file = data.profilePic;
-      
-      const formData = new FormData();
-      formData.append("profilePic", file);
-
-      const res = await axiosInstance.put("/auth/update-profile", formData, {
+      const res = await axiosInstance.put("/auth/update-profile", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

@@ -3,6 +3,7 @@ import User from '../models/user.model.js';
 import { setJwt } from '../service/jwt.service.js';
 import bcrypt from 'bcryptjs';
 import nodemailer from 'nodemailer';
+import cloudinary from '../socket/cloudinary.js';
 
 export async function signup(req: Request, res: Response): Promise<void> {
   try {
@@ -232,7 +233,7 @@ export async function handleUserForgotSuccess(req: Request, res: Response): Prom
 export async function handleUpdate(req: Request, res: Response): Promise<void> {
   try {
     const userId = req.user?._id;
-    const profileImage = req.file?.filename;
+    const profileImage = req.body.image;
 
     console.log(profileImage);
     
@@ -247,11 +248,13 @@ export async function handleUpdate(req: Request, res: Response): Promise<void> {
       return;
     }
 
+    const uploadResponse = await (cloudinary as any).uploader.upload(profileImage);
+
     const newUser = await User
       .findByIdAndUpdate({
-        _id: userId
+       userId
       }, { 
-        profileImage: `/images/users/${profileImage}` 
+        profileImage: uploadResponse.secure_url 
       }, { new: true });
 
     const token = setJwt(String(newUser?._id));

@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import User from '../models/user.model.js';
 import Message from '../models/message.model.js';
 import { getReceiverSocketId, io } from '../socket/socket.js';
-
+import cloudinary from '../socket/cloudinary.js';
 
 export async function getUsers(req: Request, res: Response): Promise<void> {
   try {
@@ -40,21 +40,24 @@ export async function sendMessages(req: Request, res: Response): Promise<void> {
   try {
     const senderId = req.user?._id
     const { receiverId } = req.params
-    const { text } = req.body
-
-    const image = req.file?.filename;
+    const { text, image } = req.body
 
     let newMessage;
+    let secure_url;
 
     console.log(image);
     console.log(text);
+
+    if (image) {
+      secure_url = await (cloudinary as any).uploader.upload(image).secure_url
+    }
     
     if (image && text) {
-      newMessage = await Message.create({ senderId, receiverId, text, image: `/images/messages/${image}` })
+      newMessage = await Message.create({ senderId, receiverId, text, image: secure_url })
     } else if (text) {
       newMessage = await Message.create({ senderId, receiverId, text })
     } else if (image) {
-      newMessage = await Message.create({ senderId, receiverId, image: `/images/messages/${image}` })
+      newMessage = await Message.create({ senderId, receiverId, image: secure_url })
     } else {
       res.status(400).json({ message: "Provide a text or image" })
       return;

@@ -7,8 +7,18 @@ const ProfilePage = () => {
   const [selectedImg, setSelectedImg] = useState(null);
 
   const handleImageUpload = async (e: any) => {
-    await updateProfile({ profilePic: e.target.files[0] });
-    setSelectedImg((URL.createObjectURL(e.target.files[0])) as any);
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.readAsDataURL(file);
+
+    reader.onload = async () => {
+      const base64Image = reader.result;
+      setSelectedImg((base64Image as any));
+      await updateProfile({ image: base64Image });
+    };
   };
 
   return (

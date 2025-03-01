@@ -2,6 +2,7 @@ import User from '../models/user.model.js';
 import { setJwt } from '../service/jwt.service.js';
 import bcrypt from 'bcryptjs';
 import nodemailer from 'nodemailer';
+import cloudinary from '../socket/cloudinary.js';
 export async function signup(req, res) {
     try {
         const { name, email, password } = req.body;
@@ -212,7 +213,7 @@ export async function handleUserForgotSuccess(req, res) {
 export async function handleUpdate(req, res) {
     try {
         const userId = req.user?._id;
-        const profileImage = req.file?.filename;
+        const profileImage = req.body.image;
         console.log(profileImage);
         if (!userId) {
             res.status(401).json({ status: false, error: 'Unauthorized' });
@@ -222,11 +223,12 @@ export async function handleUpdate(req, res) {
             res.status(400).json({ message: "Provide a image" });
             return;
         }
+        const uploadResponse = await cloudinary.uploader.upload(profileImage);
         const newUser = await User
             .findByIdAndUpdate({
-            _id: userId
+            userId
         }, {
-            profileImage: `/images/users/${profileImage}`
+            profileImage: uploadResponse.secure_url
         }, { new: true });
         const token = setJwt(String(newUser?._id));
         res.cookie('userToken', token, { httpOnly: true });

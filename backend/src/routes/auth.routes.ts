@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { signup, login, logout, handleDelete, checkLoggedIn, handleUpdate, handleUserForgot, handleUserForgotSuccess, handleUserReset } from '../controllers/auth.controller.js';
-import upload from '../middlewares/update-profile-image.middleware.js';
 import authorize from '../middlewares/authorize.middleware.js';
 
 const router = Router();
@@ -21,6 +20,6 @@ router.post('/reset', handleUserReset);
 
 router.get('/check',authorize, checkLoggedIn);
 
-router.put('/update-profile',authorize, upload.single("profilePic"), handleUpdate);
+router.put('/update-profile',authorize, handleUpdate);
 
 export default router;
