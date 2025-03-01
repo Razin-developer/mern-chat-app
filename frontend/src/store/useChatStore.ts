@@ -36,6 +36,8 @@ export const useChatStore: any = create((set, get: any) => ({
   sendMessage: async (messageData: any) => {
     const { selectedUser, messages } = get();
     try {
+      console.log(messageData);
+      
       const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`, messageData);
       set({ messages: [...messages, res.data] });
     } catch (error: any) {

@@ -45,12 +45,14 @@ export async function sendMessages(req: Request, res: Response): Promise<void> {
     let newMessage;
     let secure_url;
 
-    console.log(image);
-    console.log(text);
+    console.log("image: ",image);
+    console.log("text: ",text);
 
     if (image) {
-      secure_url = await (cloudinary as any).uploader.upload(image).secure_url
+      secure_url = await (cloudinary as any).uploader.upload(image).then((result: any) => result.secure_url);
     }
+    console.log(secure_url);
+    
     
     if (image && text) {
       newMessage = await Message.create({ senderId, receiverId, text, image: secure_url })
