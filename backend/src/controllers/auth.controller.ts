@@ -251,12 +251,12 @@ export async function handleUpdate(req: Request, res: Response): Promise<void> {
 
     const uploadResponse = await (cloudinary as any).uploader.upload(profileImage);
 
-    const newUser = await User
-      .findByIdAndUpdate({
-       userId
-      }, { 
-        profileImage: uploadResponse.secure_url 
-      }, { new: true });
+    const newUser = await User.findByIdAndUpdate(
+      userId, // Pass only the ID here
+      { profileImage: uploadResponse.secure_url },
+      { new: true }
+    );
+    
 
     const token = setJwt(String(newUser?._id));
     res.cookie('userToken', token, { httpOnly: true });
