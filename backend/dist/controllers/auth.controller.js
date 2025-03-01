@@ -215,6 +215,7 @@ export async function handleUpdate(req, res) {
         const userId = req.user?._id;
         const profileImage = req.body.image;
         console.log(profileImage);
+        console.log(req.body);
         if (!userId) {
             res.status(401).json({ status: false, error: 'Unauthorized' });
             return;

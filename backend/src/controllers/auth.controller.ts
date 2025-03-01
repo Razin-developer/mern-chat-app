@@ -236,6 +236,7 @@ export async function handleUpdate(req: Request, res: Response): Promise<void> {
     const profileImage = req.body.image;
 
     console.log(profileImage);
+    console.log(req.body);
     
 
     if (!userId) {

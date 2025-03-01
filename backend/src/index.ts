@@ -38,7 +38,7 @@ mongoose
   })
   .catch((err) => {
     console.log('Error connecting to the database: ', err);
-    process.exit();
+    process.exit(1);
   });
 
 // Setting up the server with middlewares
